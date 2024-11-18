@@ -24,15 +24,21 @@
             n.className += t + "js", ("ontouchstart" in o || o.DocumentTouch && c instanceof DocumentTouch) && (n.className += t + "touch")
         }(window, document);
     </script>
-    <!-- Google tag (gtag.js) -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-SGF85932PS"></script>
-    <script>
-    window.dataLayer = window.dataLayer || [];
-    function gtag(){dataLayer.push(arguments);}
-    gtag('js', new Date());
-    gtag('config', 'G-SGF85932PS');
-    </script>
-    <!-- <link href="https://fonts.googleapis.com/css?family=Google+Sans|Noto+Sans|Castoro" rel="stylesheet"> -->
+    <!-- Analytics tag (gtag.js) -->
+	<link rel="stylesheet" href="./static/css/bulma.min.css">
+	<link rel="stylesheet" href="./static/css/bulma-carousel.min.css">
+	<link rel="stylesheet" href="./static/css/bulma-slider.min.css">
+	<link rel="stylesheet" href="./static/css/fontawesome.all.min.css">
+	<link rel="stylesheet"
+	href="https://cdn.jsdelivr.net/gh/jpswalsh/academicons@1/css/academicons.min.css">
+	<link rel="stylesheet" href="./static/css/index.css">
+
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+	<script defer src="./static/js/fontawesome.all.min.js"></script>
+	<script src="./static/js/bulma-carousel.min.js"></script>
+	<script src="./static/js/bulma-slider.min.js"></script>
+	<script src="./static/js/index.js"></script>
+
     <script type="text/javascript" src="static/js/zoom.js"></script>
     <script type="text/javascript" src="static/js/video_comparison.js"></script>
 
@@ -173,9 +179,7 @@
                 </div>
 
             </div>
-        <div class="image-container2">
-            <img src="assets/teaser.png">
-        </div>
+
     </div>
     <br>
 
@@ -184,67 +188,190 @@
         <div class="w-container grey_container">
             <h2 class="grey-heading_nerf">Abstract</h2>
             <p class="paragraph-3 nerf_text nerf_results_text">
-    		Pretrained vision language models (VLMs) present an opportunity to caption unlabeled 3D objects at scale. The leading approach to summarize VLM descriptions from different views of an object (Luo et al., 2023) relies on a language model (GPT4) to produce the final output. 
-            This text-based aggregation is susceptible to hallucinations as it merges potentially contradictory descriptions.
-            We propose an alternative algorithm to marginalize over factors such as the viewpoint which affect the VLM's response. Instead of merging text responses, we utilize the VLM's joint image-text likelihoods.
-            We show our probabilistic aggregation is not only more reliable and efficient, but sets the SoTA on inferring object types with respect to human-verified labels.
-            The aggregated annotations are also useful for conditional inference; they improve downstream predictions (e.g., of object material) when the object’s type is specified as an auxiliary text-based input.
-            Such auxiliary inputs allow ablating the contribution of visual reasoning over visionless reasoning in an unsupervised setting.
-            With these supervised and unsupervised evaluations, we show how a VLM-based pipeline can be leveraged to produce reliable annotations for 764K objects from the Objaverse dataset.
+	We introduce a hierarchical probabilistic approach to go from a 2D image to multiview 3D: a diffusion “prior” models the unseen 3D geometry, which then conditions a diffusion “decoder” to generate novel views of the subject. We use a pointmap-based geometric representation in a multiview image format to coordinate the generation of multiple target views simultaneously. We facilitate correspondence between views by assuming fixed target camera poses relative to the source camera, and constructing a predictable distribution of geometric features per target. Our modular, geometry-driven approach to novel-view synthesis (called “unPIC”) beats SoTA baselines such as CAT3D and One-2-3-45 on held-out objects from ObjaverseXL, as well as real-world objects ranging from Google Scanned Objects, Amazon Berkeley Objects, to the Digital Twin Catalog.
             <br>
             </p>
         </div>
     </div>
 
-    <div class="white_section_nerf w-container">
-        <h2 class="grey-heading_nerf">1. Language models hallucinate</h2>
-        <!-- <h2 class="grey-heading_nerf">  even when summarizing descriptions of the same object</h2> -->
-        <p class="paragraph-3 nerf_text nerf_results_text"> Prior work that relies on GPT-4 to aggregate multi-view object descriptions is prone to contain hallucinated details</p>
-        <video controls width="512">
-          <source src=“assets/cap3d_0f352994f8c141f091779ab91710c3f6.webm" type="video/webm" />
-        </video>
-    </div>
 
-    <div class="white_section_nerf w-container">
-        <h2 class="grey-heading_nerf">2. A simple way to mitigate hallucinations</h2>
-        <p class="paragraph-3 nerf_text nerf_results_text">We propose an algorithm, <em>ScoreAgg</em>, which relies on visually grounded VLM scores to produce reliable summaries. A key innovation is that we don't need to score all possible descriptions against all available images (e.g., views of a given object).</p>
+<section class="hero is-light is-small">
+  <div class="hero-body">
+    <div class="container">
+      <div id="results-carousel" class="carousel results-carousel">
+<div class="item">
+      <video poster="" autoplay controls muted loop playsinline height="100%">
+        <source src="./static/videos/1.mp4"
+                type="video/mp4">
+      </video>
+</div>
+<div class="item">
+      <video poster="" autoplay controls muted loop playsinline height="100%">
+        <source src="./static/videos/2.mp4"
+                type="video/mp4">
+      </video>
+</div>
+<div class="item">
+      <video poster="" autoplay controls muted loop playsinline height="100%">
+        <source src="./static/videos/3.mp4"
+                type="video/mp4">
+      </video>
+</div>
+<div class="item">
+      <video poster="" autoplay controls muted loop playsinline height="100%">
+        <source src="./static/videos/4.mp4"
+                type="video/mp4">
+      </video>
+</div>
+<div class="item">
+      <video poster="" autoplay controls muted loop playsinline height="100%">
+        <source src="./static/videos/5.mp4"
+                type="video/mp4">
+      </video>
+</div>
+<div class="item">
+      <video poster="" autoplay controls muted loop playsinline height="100%">
+        <source src="./static/videos/6.mp4"
+                type="video/mp4">
+      </video>
+</div>
+<div class="item">
+      <video poster="" autoplay controls muted loop playsinline height="100%">
+        <source src="./static/videos/7.mp4"
+                type="video/mp4">
+      </video>
+</div>
+<div class="item">
+      <video poster="" autoplay controls muted loop playsinline height="100%">
+        <source src="./static/videos/8.mp4"
+                type="video/mp4">
+      </video>
+</div>
+<div class="item">
+      <video poster="" autoplay controls muted loop playsinline height="100%">
+        <source src="./static/videos/9.mp4"
+                type="video/mp4">
+      </video>
+</div>
+<div class="item">
+      <video poster="" autoplay controls muted loop playsinline height="100%">
+        <source src="./static/videos/10.mp4"
+                type="video/mp4">
+      </video>
+</div>
+<div class="item">
+      <video poster="" autoplay controls muted loop playsinline height="100%">
+        <source src="./static/videos/11.mp4"
+                type="video/mp4">
+      </video>
+</div>
+<div class="item">
+      <video poster="" autoplay controls muted loop playsinline height="100%">
+        <source src="./static/videos/12.mp4"
+                type="video/mp4">
+      </video>
+</div>
+<div class="item">
+      <video poster="" autoplay controls muted loop playsinline height="100%">
+        <source src="./static/videos/13.mp4"
+                type="video/mp4">
+      </video>
+</div>
+<div class="item">
+      <video poster="" autoplay controls muted loop playsinline height="100%">
+        <source src="./static/videos/14.mp4"
+                type="video/mp4">
+      </video>
+</div>
+<div class="item">
+      <video poster="" autoplay controls muted loop playsinline height="100%">
+        <source src="./static/videos/15.mp4"
+                type="video/mp4">
+      </video>
+</div>
+<div class="item">
+      <video poster="" autoplay controls muted loop playsinline height="100%">
+        <source src="./static/videos/16.mp4"
+                type="video/mp4">
+      </video>
+</div>
+<div class="item">
+      <video poster="" autoplay controls muted loop playsinline height="100%">
+        <source src="./static/videos/17.mp4"
+                type="video/mp4">
+      </video>
+</div>
+<div class="item">
+      <video poster="" autoplay controls muted loop playsinline height="100%">
+        <source src="./static/videos/18.mp4"
+                type="video/mp4">
+      </video>
+</div>
+<div class="item">
+      <video poster="" autoplay controls muted loop playsinline height="100%">
+        <source src="./static/videos/19.mp4"
+                type="video/mp4">
+      </video>
+</div>
+<div class="item">
+      <video poster="" autoplay controls muted loop playsinline height="100%">
+        <source src="./static/videos/20.mp4"
+                type="video/mp4">
+      </video>
+</div>
+<div class="item">
+      <video poster="" autoplay controls muted loop playsinline height="100%">
+        <source src="./static/videos/21.mp4"
+                type="video/mp4">
+      </video>
+</div>
+<div class="item">
+      <video poster="" autoplay controls muted loop playsinline height="100%">
+        <source src="./static/videos/22.mp4"
+                type="video/mp4">
+      </video>
+</div>
+<div class="item">
+      <video poster="" autoplay controls muted loop playsinline height="100%">
+        <source src="./static/videos/23.mp4"
+                type="video/mp4">
+      </video>
+</div>
+<div class="item">
+      <video poster="" autoplay controls muted loop playsinline height="100%">
+        <source src="./static/videos/24.mp4"
+                type="video/mp4">
+      </video>
+</div>
+<div class="item">
+      <video poster="" autoplay controls muted loop playsinline height="100%">
+        <source src="./static/videos/25.mp4"
+                type="video/mp4">
+      </video>
+</div>
+<div class="item">
+      <video poster="" autoplay controls muted loop playsinline height="100%">
+        <source src="./static/videos/26.mp4"
+                type="video/mp4">
+      </video>
+</div>
+<div class="item">
+      <video poster="" autoplay controls muted loop playsinline height="100%">
+        <source src="./static/videos/27.mp4"
+                type="video/mp4">
+      </video>
+</div>
+<div class="item">
+      <video poster="" autoplay controls muted loop playsinline height="100%">
+        <source src="./static/videos/28.mp4"
+                type="video/mp4">
+      </video>
+</div>
+      </div>
     </div>
+  </div>
+</section>
 
-    <div class="white_section_nerf w-container">
-        <h2 class="grey-heading_nerf">Quantitative Comparison</h2>
-        <p class="paragraph-3 nerf_text nerf_results_text">See Figure 3 in the paper for a quantitative comparison.</p>
-    </div>
-    
-    <br>
-    
-    <div class="white_section_nerf_ref w-container">
-        <h2 class="grey-heading_nerf">References</h2>
-        <!-- <br> -->
-       <br><br><br>
-        <!-- <pre><code>
-
-      </code></pre> -->
-    </div>
-
-
-    <div class="white_section_nerf grey_container w-container">
-        <h2 class="grey-heading_nerf">BibTeX</h2>
-        <!--
-        <div class="bibtex">
-            <pre><code>
-@inproceedings{ICML2024_LeveragingVLMs,
- author = {Kabra, Rishabh and Matthey, Loic and Lerchner, Alexander and Mitra, Niloy J.},
- title = {Leveraging VLM-Based Pipelines to Annotate 3D Objects},
- booktitle = {Proceedings of the 41st International Conference on Machine Learning},
- series = {Proceedings of Machine Learning Research},
- publisher = {PMLR},
- volume = {235},
- year = {2024}
-}          
-            </code></pre>
-        </div>
-        -->
-    </div>
 
 </body>
 
