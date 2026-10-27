@@ -1037,23 +1037,23 @@
 
         <div class="filter-pills" id="categoryFilterPills">
           <button class="filter-pill active" data-cat="all">All Categories</button>
-          <button class="filter-pill" data-cat="Animals & Figurines">Animals &amp; Figurines</button>
-          <button class="filter-pill" data-cat="Teapots & Ceramics">Teapots &amp; Ceramics</button>
-          <button class="filter-pill" data-cat="Toys & Games">Toys &amp; Games</button>
-          <button class="filter-pill" data-cat="Footwear & Apparel">Footwear &amp; Apparel</button>
-          <button class="filter-pill" data-cat="Food & Fruit">Food &amp; Fruit</button>
-          <button class="filter-pill" data-cat="Household & Everyday">Household</button>
+          <button class="filter-pill" data-cat="Animals & Figurines">Animals &amp; Figurines (11)</button>
+          <button class="filter-pill" data-cat="Teapots & Ceramics">Teapots &amp; Ceramics (10)</button>
+          <button class="filter-pill" data-cat="Toys & Games">Toys &amp; Games (8)</button>
+          <button class="filter-pill" data-cat="Footwear & Apparel">Footwear &amp; Apparel (4)</button>
+          <button class="filter-pill" data-cat="Food & Fruit">Food &amp; Fruit (4)</button>
+          <button class="filter-pill" data-cat="Household & Everyday">Household (3)</button>
         </div>
 
         <div style="display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap;">
           <select class="model-select" style="min-width: 185px;" id="sortSelect" aria-label="Sort objects">
-            <option value="id">Sort: Rebuttal Index (#0–#39)</option>
+            <option value="id">Sort: Default Order (#0–#39)</option>
             <option value="cd_asc">Sort: Lowest unPIC Chamfer Dist</option>
             <option value="gain_d3d">Sort: Largest Gain vs. Direct3D</option>
             <option value="gain_im">Sort: Largest Gain vs. InstantMesh</option>
             <option value="points_desc">Sort: Point Count (High → Low)</option>
           </select>
-          <input type="search" class="search-input" id="searchInput" placeholder="Search object name or UID..." />
+          <input type="search" class="search-input" id="searchInput" placeholder="Search name, category, or UID..." />
         </div>
       </div>
 
@@ -1564,18 +1564,30 @@
     // =========================================================================
     // 5. Gallery Grid & Controls
     // =========================================================================
+    function normalizeSearchText(str) {
+      return str
+        .toLowerCase()
+        .replace(/&/g, ' and ')
+        .replace(/[^a-z0-9#]+/g, ' ')
+        .trim();
+    }
+
     function getFilteredSortedModels() {
+      const normQ = searchQuery ? normalizeSearchText(searchQuery) : '';
+      const qTokens = normQ ? normQ.split(/\s+/).filter(t => t && t !== 'and') : [];
+
       return MODELS.filter(m => {
         if (datasetFilter !== 'all' && m.dataset_short !== datasetFilter) return false;
         if (categoryFilter !== 'all' && m.category !== categoryFilter) return false;
-        if (searchQuery) {
-          const q = searchQuery.toLowerCase();
-          if (!m.title.toLowerCase().includes(q) &&
-              !m.uid.toLowerCase().includes(q) &&
-              `#${m.id}` !== q &&
-              String(m.id) !== q) {
-            return false;
-          }
+        if (qTokens.length > 0) {
+          if (`#${m.id}` === normQ || String(m.id) === normQ) return true;
+          const haystack = normalizeSearchText(
+            `${m.title} ${m.category} ${m.uid} ${m.dataset_short} ${m.dataset}`
+          );
+          return qTokens.every(tok => {
+            const stem = tok.endsWith('s') && tok.length > 3 ? tok.slice(0, -1) : tok;
+            return haystack.includes(tok) || haystack.includes(stem);
+          });
         }
         return true;
       }).sort((a, b) => {
@@ -1745,7 +1757,21 @@
         document.querySelectorAll('#datasetFilterPills .filter-pill').forEach(b => b.classList.remove('active'));
         btn.classList.add('active');
         datasetFilter = btn.dataset.filter;
+        // If current category has 0 items in this dataset, reset category to 'all'
+        if (datasetFilter !== 'all' && categoryFilter !== 'all') {
+          const hasMatch = MODELS.some(m => m.dataset_short === datasetFilter && m.category === categoryFilter);
+          if (!hasMatch) {
+            categoryFilter = 'all';
+            document.querySelectorAll('#categoryFilterPills .filter-pill').forEach(b => {
+              b.classList.toggle('active', b.dataset.cat === 'all');
+            });
+          }
+        }
         renderGallery();
+        const list = getFilteredSortedModels();
+        if (list.length > 0 && !list.some(m => m.id === currentId)) {
+          selectModel(list[0].id);
+        }
       });
     });
 
@@ -1754,7 +1780,21 @@
         document.querySelectorAll('#categoryFilterPills .filter-pill').forEach(b => b.classList.remove('active'));
         btn.classList.add('active');
         categoryFilter = btn.dataset.cat;
+        // If current dataset has 0 items in this category (e.g., GSO + Teapots & Ceramics), reset dataset to 'all'
+        if (datasetFilter !== 'all' && categoryFilter !== 'all') {
+          const hasMatch = MODELS.some(m => m.dataset_short === datasetFilter && m.category === categoryFilter);
+          if (!hasMatch) {
+            datasetFilter = 'all';
+            document.querySelectorAll('#datasetFilterPills .filter-pill').forEach(b => {
+              b.classList.toggle('active', b.dataset.filter === 'all');
+            });
+          }
+        }
         renderGallery();
+        const list = getFilteredSortedModels();
+        if (list.length > 0 && !list.some(m => m.id === currentId)) {
+          selectModel(list[0].id);
+        }
       });
     });
 
