@@ -72,9 +72,51 @@
 
     .brand-group {
       display: flex;
+      flex-direction: column;
+      gap: 0.2rem;
+    }
+
+    .brand-title-row {
+      display: flex;
       align-items: baseline;
       gap: 0.75rem;
       flex-wrap: wrap;
+    }
+
+    .brand-authors-row {
+      display: flex;
+      align-items: center;
+      gap: 0.65rem;
+      flex-wrap: wrap;
+      font-size: 0.8rem;
+      color: var(--text-secondary);
+    }
+
+    .paper-links {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+
+    .paper-link-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.3rem;
+      font-size: 0.74rem;
+      font-weight: 600;
+      padding: 0.18rem 0.55rem;
+      border-radius: 999px;
+      border: 1px solid var(--border-strong);
+      background: var(--bg-surface);
+      color: var(--text-primary);
+      text-decoration: none;
+      transition: all 0.14s ease;
+    }
+
+    .paper-link-pill:hover {
+      background: var(--accent-primary);
+      border-color: var(--accent-primary);
+      color: #ffffff;
     }
 
     .brand-logo {
@@ -810,8 +852,19 @@
   <header class="top-bar">
     <div class="top-bar-inner">
       <div class="brand-group">
-        <a href="#" class="brand-logo">un<span>PIC</span></a>
-        <span class="brand-paper-title">How to Spin an Object: First, Get the Shape Right</span>
+        <div class="brand-title-row">
+          <a href="#" class="brand-logo">un<span>PIC</span></a>
+          <span class="brand-paper-title">How to Spin an Object: First, Get the Shape Right</span>
+        </div>
+        <div class="brand-authors-row">
+          <span>Rishabh Kabra, Drew A. Hudson, Sjoerd van Steenkiste, João Carreira, Niloy J. Mitra</span>
+          <span style="color: var(--border-strong);">•</span>
+          <div class="paper-links">
+            <a class="paper-link-pill" href="https://openaccess.thecvf.com/content/CVPR2026W/GenRecon3d/html/Kabra_How_to_Spin_an_Object_First_Get_the_Shape_Right_CVPRW_2026_paper.html" target="_blank" rel="noopener noreferrer">📄 Paper (CVPRW 2026)</a>
+            <a class="paper-link-pill" href="https://openaccess.thecvf.com/content/CVPR2026W/GenRecon3d/papers/Kabra_How_to_Spin_an_Object_First_Get_the_Shape_Right_CVPRW_2026_paper.pdf" target="_blank" rel="noopener noreferrer">📥 PDF</a>
+            <a class="paper-link-pill" href="https://github.com/google-deepmind/unpic" target="_blank" rel="noopener noreferrer">💻 GitHub Code</a>
+          </div>
+        </div>
       </div>
 
       <div class="nav-controls">
