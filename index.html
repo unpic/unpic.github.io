@@ -3,36 +3,31 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="unPIC: How to Spin an Object: First, Get the Shape Right — A Geometric Multiview Prior for Image to 3D Synthesis." />
+  <meta name="description" content="unPIC: How to Spin an Object: First, Get the Shape Right — Interactive 3D NOCS, Point Cloud, and Mesh Reconstructions." />
   <title>unPIC — How to Spin an Object: First, Get the Shape Right</title>
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 
   <style>
     :root {
-      --bg-page: #f6f5f1;
+      --bg-page: #fbfbfa;
       --bg-surface: #ffffff;
-      --bg-subtle: #edece6;
-      --bg-elevated: #faf9f6;
-      --text-primary: #161618;
-      --text-secondary: #4e4e56;
-      --text-muted: #787882;
-      --border-hairline: #e2e0d8;
-      --border-strong: #c7c4bc;
-      --accent-primary: #1d4ed8;
-      --accent-primary-soft: #dbeafe;
-      --accent-teal: #0f766e;
-      --accent-teal-soft: #ccfbf1;
-      --nocs-x: #ef4444;
-      --nocs-y: #22c55e;
-      --nocs-z: #3b82f6;
-      --shadow-sm: 0 1px 3px rgba(22, 22, 24, 0.05);
-      --shadow-md: 0 8px 24px rgba(22, 22, 24, 0.07);
-      --radius-sm: 6px;
-      --radius-md: 10px;
-      --radius-lg: 14px;
+      --bg-subtle: #f2f1ed;
+      --bg-canvas: #131417;
+      --text-primary: #111215;
+      --text-secondary: #52535c;
+      --text-muted: #868792;
+      --border-subtle: rgba(17, 18, 21, 0.08);
+      --border-strong: rgba(17, 18, 21, 0.15);
+      --accent: #111215;
+      --radius-sm: 8px;
+      --radius-md: 12px;
+      --radius-lg: 18px;
+      --radius-pill: 999px;
+      --shadow-card: 0 2px 10px rgba(0, 0, 0, 0.03), 0 1px 2px rgba(0, 0, 0, 0.04);
+      --shadow-stage: 0 20px 50px rgba(15, 16, 20, 0.08), 0 2px 8px rgba(15, 16, 20, 0.04);
     }
 
     * {
@@ -45,115 +40,251 @@
       font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
       background-color: var(--bg-page);
       color: var(--text-primary);
-      line-height: 1.5;
+      line-height: 1.55;
       -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
     }
 
-    /* Sticky Top Header with Object Switcher */
-    .top-bar {
-      position: sticky;
-      top: 0;
-      z-index: 100;
-      background: rgba(246, 245, 241, 0.94);
-      backdrop-filter: blur(10px);
-      border-bottom: 1px solid var(--border-hairline);
-      padding: 0.65rem 1.25rem;
-    }
-
-    .top-bar-inner {
-      max-width: 1560px;
+    .page-wrap {
+      max-width: 1480px;
       margin: 0 auto;
+      padding: 0 1.5rem 4.5rem;
+    }
+
+    /* =========================================================================
+       Editorial Hero Header
+       ========================================================================= */
+    .hero {
+      padding: 2.75rem 0 1.75rem;
+      text-align: center;
+      max-width: 920px;
+      margin: 0 auto;
+    }
+
+    .hero-title {
+      font-size: clamp(1.75rem, 3.1vw, 2.55rem);
+      font-weight: 700;
+      letter-spacing: -0.032em;
+      line-height: 1.15;
+      color: var(--text-primary);
+      margin-bottom: 0.75rem;
+    }
+
+    .hero-title .brand-mark {
+      font-family: 'JetBrains Mono', monospace;
+      font-weight: 600;
+      letter-spacing: -0.04em;
+      padding-right: 0.35rem;
+    }
+
+    .hero-authors {
+      font-size: 0.96rem;
+      color: var(--text-secondary);
+      font-weight: 450;
+      margin-bottom: 1.1rem;
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 0.35rem 1.15rem;
+    }
+
+    .hero-authors span {
+      white-space: nowrap;
+    }
+
+    .hero-links {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.55rem;
+      flex-wrap: wrap;
+      margin-bottom: 1.4rem;
+    }
+
+    .hero-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.45rem;
+      padding: 0.48rem 1rem;
+      border-radius: var(--radius-pill);
+      font-size: 0.82rem;
+      font-weight: 500;
+      text-decoration: none;
+      color: var(--text-primary);
+      background: var(--bg-surface);
+      border: 1px solid var(--border-strong);
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03);
+      transition: all 0.16s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .hero-pill:hover {
+      background: var(--text-primary);
+      color: #ffffff;
+      border-color: var(--text-primary);
+      transform: translateY(-1px);
+    }
+
+    .hero-pill svg {
+      width: 14px;
+      height: 14px;
+      stroke: currentColor;
+      stroke-width: 1.8;
+      fill: none;
+    }
+
+    .hero-tldr {
+      font-size: 0.92rem;
+      color: var(--text-secondary);
+      line-height: 1.62;
+      max-width: 820px;
+      margin: 0 auto;
+      background: var(--bg-subtle);
+      padding: 0.85rem 1.25rem;
+      border-radius: var(--radius-md);
+      text-align: left;
+    }
+
+    .hero-tldr strong {
+      color: var(--text-primary);
+      font-weight: 600;
+    }
+
+    .tldr-badge {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.7rem;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      background: var(--text-primary);
+      color: #ffffff;
+      padding: 0.14rem 0.48rem;
+      border-radius: 5px;
+      margin-right: 0.45rem;
+      vertical-align: 1px;
+    }
+
+    /* =========================================================================
+       Sleek 3D Pipeline Stage Container
+       ========================================================================= */
+    .stage-card {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-stage);
+      overflow: hidden;
+      margin-bottom: 2.5rem;
+    }
+
+    /* Minimal Top Bar inside Stage */
+    .stage-topbar {
+      padding: 0.75rem 1.15rem;
       display: flex;
       align-items: center;
       justify-content: space-between;
       gap: 1rem;
+      border-bottom: 1px solid var(--border-subtle);
       flex-wrap: wrap;
     }
 
-    .brand-group {
-      display: flex;
-      flex-direction: column;
-      gap: 0.2rem;
-    }
-
-    .brand-title-row {
-      display: flex;
-      align-items: baseline;
-      gap: 0.75rem;
-      flex-wrap: wrap;
-    }
-
-    .brand-authors-row {
-      display: flex;
-      align-items: center;
-      gap: 0.65rem;
-      flex-wrap: wrap;
-      font-size: 0.8rem;
-      color: var(--text-secondary);
-    }
-
-    .paper-links {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.4rem;
-    }
-
-    .paper-link-pill {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.3rem;
-      font-size: 0.74rem;
-      font-weight: 600;
-      padding: 0.18rem 0.55rem;
-      border-radius: 999px;
-      border: 1px solid var(--border-strong);
-      background: var(--bg-surface);
-      color: var(--text-primary);
-      text-decoration: none;
-      transition: all 0.14s ease;
-    }
-
-    .paper-link-pill:hover {
-      background: var(--accent-primary);
-      border-color: var(--accent-primary);
-      color: #ffffff;
-    }
-
-    .brand-logo {
-      font-family: 'JetBrains Mono', monospace;
-      font-weight: 700;
-      font-size: 1.2rem;
-      letter-spacing: -0.03em;
-      color: var(--text-primary);
-      text-decoration: none;
-    }
-
-    .brand-logo span {
-      color: var(--accent-primary);
-    }
-
-    .brand-paper-title {
-      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-      font-size: 1.05rem;
-      font-weight: 600;
-      letter-spacing: -0.015em;
-      color: var(--text-primary);
-      border-left: 1px solid var(--border-strong);
-      padding-left: 0.75rem;
-    }
-
-    .nav-controls {
+    .active-object-nav {
       display: flex;
       align-items: center;
       gap: 0.5rem;
       flex-wrap: wrap;
     }
 
-    .btn {
+    .icon-btn {
+      width: 32px;
+      height: 32px;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--border-strong);
+      background: var(--bg-surface);
+      color: var(--text-primary);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.14s ease;
+    }
+
+    .icon-btn:hover {
+      background: var(--bg-subtle);
+    }
+
+    .object-picker {
       font-family: 'Inter', sans-serif;
-      font-size: 0.8rem;
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--text-primary);
+      background: var(--bg-subtle);
+      border: 1px solid transparent;
+      border-radius: var(--radius-sm);
+      padding: 0.36rem 0.75rem;
+      cursor: pointer;
+      min-width: 240px;
+      transition: border-color 0.14s ease;
+    }
+
+    .object-picker:hover,
+    .object-picker:focus {
+      border-color: var(--border-strong);
+      outline: none;
+    }
+
+    .meta-tag {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.72rem;
+      color: var(--text-muted);
+      padding: 0.2rem 0.5rem;
+      background: var(--bg-subtle);
+      border-radius: 6px;
+    }
+
+    .stage-topbar-right {
+      display: flex;
+      align-items: center;
+      gap: 0.55rem;
+      flex-wrap: wrap;
+    }
+
+    .pill-group {
+      display: inline-flex;
+      background: var(--bg-subtle);
+      padding: 3px;
+      border-radius: var(--radius-sm);
+      gap: 2px;
+    }
+
+    .pill-btn {
+      font-family: 'Inter', sans-serif;
+      font-size: 0.76rem;
       font-weight: 500;
-      padding: 0.42rem 0.78rem;
+      padding: 0.28rem 0.7rem;
+      border-radius: 6px;
+      border: none;
+      background: transparent;
+      color: var(--text-secondary);
+      cursor: pointer;
+      transition: all 0.14s ease;
+      white-space: nowrap;
+    }
+
+    .pill-btn:hover {
+      color: var(--text-primary);
+    }
+
+    .pill-btn.active {
+      background: var(--bg-surface);
+      color: var(--text-primary);
+      font-weight: 600;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+    }
+
+    .action-btn {
+      font-family: 'Inter', sans-serif;
+      font-size: 0.76rem;
+      font-weight: 500;
+      padding: 0.34rem 0.75rem;
       border-radius: var(--radius-sm);
       border: 1px solid var(--border-strong);
       background: var(--bg-surface);
@@ -162,241 +293,134 @@
       display: inline-flex;
       align-items: center;
       gap: 0.35rem;
-      text-decoration: none;
       transition: all 0.14s ease;
-      user-select: none;
     }
 
-    .btn:hover {
+    .action-btn:hover {
       background: var(--bg-subtle);
-      border-color: var(--text-secondary);
     }
 
-    .btn-primary {
-      background: var(--accent-primary);
-      border-color: var(--accent-primary);
-      color: #ffffff;
-    }
-
-    .btn-primary:hover {
-      background: #1e40af;
-      border-color: #1e40af;
-      color: #ffffff;
-    }
-
-    .btn-sm {
-      padding: 0.28rem 0.58rem;
-      font-size: 0.74rem;
-    }
-
-    .model-select {
-      font-family: 'Inter', sans-serif;
-      font-size: 0.82rem;
-      font-weight: 500;
-      padding: 0.4rem 0.7rem;
-      border-radius: var(--radius-sm);
-      border: 1px solid var(--border-strong);
-      background: var(--bg-surface);
-      color: var(--text-primary);
-      cursor: pointer;
-      min-width: 250px;
-    }
-
-    .container {
-      max-width: 1560px;
-      margin: 0 auto;
-      padding: 1rem 1.25rem 3.5rem;
-    }
-
-    /* Full 3D Hierarchical Pipeline Workbench */
-    .pipeline-3d-shell {
-      background: var(--bg-surface);
-      border: 1px solid var(--border-hairline);
-      border-radius: var(--radius-lg);
-      box-shadow: var(--shadow-md);
-      overflow: hidden;
-      margin-bottom: 1.75rem;
-    }
-
-    /* Top Control Bar inside the 3D Shell */
-    .shell-header {
-      padding: 0.75rem 1.15rem;
-      background: var(--bg-elevated);
-      border-bottom: 1px solid var(--border-hairline);
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 1rem;
-      flex-wrap: wrap;
-    }
-
-    .object-headline {
-      display: flex;
-      align-items: center;
-      gap: 0.65rem;
-      flex-wrap: wrap;
-    }
-
-    .id-badge {
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 0.78rem;
-      font-weight: 600;
-      padding: 0.18rem 0.5rem;
-      border-radius: 4px;
-      background: var(--text-primary);
-      color: #fff;
-    }
-
-    .dataset-pill {
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 0.72rem;
-      font-weight: 600;
-      padding: 0.18rem 0.5rem;
-      border-radius: 4px;
-    }
-
-    .dataset-pill.dtc {
-      background: var(--accent-primary-soft);
-      color: var(--accent-primary);
-    }
-
-    .dataset-pill.gso {
-      background: var(--accent-teal-soft);
-      color: var(--accent-teal);
-    }
-
-    .object-title {
-      font-size: 1.05rem;
-      font-weight: 600;
-      color: var(--text-primary);
-    }
-
-    .object-uid {
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 0.75rem;
-      color: var(--text-muted);
-    }
-
-    .segmented-control {
-      display: inline-flex;
-      background: var(--bg-subtle);
-      padding: 2px;
-      border-radius: var(--radius-sm);
-      border: 1px solid var(--border-hairline);
-    }
-
-    .seg-btn {
-      font-family: 'Inter', sans-serif;
-      font-size: 0.75rem;
-      font-weight: 500;
-      padding: 0.28rem 0.62rem;
-      border: none;
-      background: transparent;
-      color: var(--text-secondary);
-      border-radius: 4px;
-      cursor: pointer;
-      transition: all 0.12s;
-    }
-
-    .seg-btn.active {
-      background: var(--bg-surface);
-      color: var(--text-primary);
-      font-weight: 600;
-      box-shadow: var(--shadow-sm);
-    }
-
-    /* 4-Column Pipeline Grid: [2D Input] -> [3D NOCS] -> [3D RGB Point Cloud] -> [3D RGB Mesh] */
+    /* =========================================================================
+       4-Column Pipeline Viewport Grid
+       ========================================================================= */
     .pipeline-3d-grid {
       display: grid;
-      grid-template-columns: 230px 1fr 1fr 1fr;
-      height: 540px;
-      background: #121316;
+      grid-template-columns: 220px 1fr 1fr 1fr;
+      height: 520px;
+      background: var(--bg-canvas);
     }
 
     .pipeline-3d-grid.layout-single {
-      grid-template-columns: 230px 1fr;
+      grid-template-columns: 220px 1fr;
     }
+
     .pipeline-3d-grid.layout-single #paneNocs,
     .pipeline-3d-grid.layout-single #panePc {
       display: none;
     }
 
-    /* Column 0: 2D Input & Object Info Sidebar */
-    .input-sidebar {
-      background: var(--bg-surface);
-      border-right: 1px solid var(--border-hairline);
+    /* Input Sidebar (Conditioning 2D Image) */
+    .input-pane {
+      background: #18191d;
+      border-right: 1px solid rgba(255, 255, 255, 0.07);
       padding: 1rem;
       display: flex;
       flex-direction: column;
       justify-content: space-between;
-      color: var(--text-primary);
-      overflow-y: auto;
+      color: #f4f4f6;
     }
 
-    .stage-kicker {
+    .pane-kicker {
       font-family: 'JetBrains Mono', monospace;
-      font-size: 0.68rem;
-      font-weight: 600;
+      font-size: 0.66rem;
       text-transform: uppercase;
-      letter-spacing: 0.05em;
-      color: var(--text-muted);
-      margin-bottom: 0.2rem;
+      letter-spacing: 0.06em;
+      color: rgba(255, 255, 255, 0.45);
+      margin-bottom: 0.15rem;
     }
 
-    .stage-heading {
-      font-size: 0.92rem;
+    .pane-heading {
+      font-size: 0.84rem;
       font-weight: 600;
-      margin-bottom: 0.6rem;
-      color: var(--text-primary);
+      color: #ffffff;
     }
 
-    .input-img-frame {
+    .input-preview-box {
       width: 100%;
       aspect-ratio: 1 / 1;
       border-radius: var(--radius-md);
-      border: 1px solid var(--border-hairline);
       background: #ffffff;
       display: flex;
       align-items: center;
       justify-content: center;
+      padding: 0.65rem;
+      margin: 0.75rem 0;
       overflow: hidden;
-      padding: 0.5rem;
-      margin-bottom: 0.6rem;
+      box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.06);
+      transition: background 0.15s ease;
     }
 
-    .input-img-frame.gray-bg {
+    .input-preview-box.gray-bg {
       background: #7f7f7f;
       padding: 0;
     }
 
-    .input-img-frame img {
+    .input-preview-box img {
       width: 100%;
       height: 100%;
       object-fit: contain;
     }
 
-    .stats-list {
-      border-top: 1px solid var(--border-hairline);
-      padding-top: 0.7rem;
+    .input-hint {
+      font-size: 0.73rem;
+      color: rgba(255, 255, 255, 0.52);
+      line-height: 1.45;
+    }
+
+    .input-bottom {
       display: flex;
       flex-direction: column;
-      gap: 0.42rem;
-      font-size: 0.75rem;
+      gap: 0.55rem;
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
+      padding-top: 0.75rem;
     }
 
-    .stat-row {
+    .metric-mini {
       display: flex;
       justify-content: space-between;
-      align-items: center;
+      font-size: 0.73rem;
+      color: rgba(255, 255, 255, 0.55);
     }
 
-    .stat-row span {
-      color: var(--text-muted);
-    }
-
-    .stat-row strong {
+    .metric-mini strong {
       font-family: 'JetBrains Mono', monospace;
-      font-size: 0.74rem;
+      color: #5eead4;
+      font-weight: 500;
+    }
+
+    .export-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.4rem;
+    }
+
+    .dark-btn {
+      font-family: 'Inter', sans-serif;
+      font-size: 0.72rem;
+      font-weight: 500;
+      padding: 0.34rem 0.5rem;
+      border-radius: 6px;
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      background: rgba(255, 255, 255, 0.05);
+      color: rgba(255, 255, 255, 0.88);
+      cursor: pointer;
+      transition: all 0.14s ease;
+      text-align: center;
+    }
+
+    .dark-btn:hover {
+      background: rgba(255, 255, 255, 0.12);
+      color: #ffffff;
     }
 
     /* 3D Stage Panes */
@@ -405,7 +429,7 @@
       width: 100%;
       height: 100%;
       overflow: hidden;
-      border-right: 1px solid rgba(255, 255, 255, 0.1);
+      border-right: 1px solid rgba(255, 255, 255, 0.07);
     }
 
     .stage-3d-pane:last-child {
@@ -423,291 +447,315 @@
       cursor: grabbing;
     }
 
-    /* Overlay Headers inside each 3D Viewport */
-    .pane-overlay-top {
+    /* Floating Glass Header inside each 3D Pane */
+    .pane-hud-top {
       position: absolute;
-      top: 12px;
-      left: 12px;
-      right: 12px;
+      top: 14px;
+      left: 14px;
+      right: 14px;
       display: flex;
-      align-items: flex-start;
+      align-items: center;
       justify-content: space-between;
       gap: 0.5rem;
       pointer-events: none;
       z-index: 10;
+      flex-wrap: wrap;
     }
 
-    .pane-title-card {
+    .hud-label {
       pointer-events: auto;
-      background: rgba(18, 19, 23, 0.8);
-      backdrop-filter: blur(8px);
-      border: 1px solid rgba(255, 255, 255, 0.15);
-      border-radius: var(--radius-sm);
-      padding: 0.4rem 0.7rem;
-      color: #f4f4f6;
-    }
-
-    .pane-step-tag {
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 0.65rem;
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-      display: flex;
+      display: inline-flex;
       align-items: center;
-      gap: 0.4rem;
-      color: #a1a1aa;
-    }
-
-    .pane-main-label {
-      font-size: 0.82rem;
-      font-weight: 600;
+      gap: 0.45rem;
+      background: rgba(20, 21, 26, 0.72);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      padding: 0.32rem 0.68rem;
+      border-radius: var(--radius-pill);
       color: #ffffff;
-      margin-top: 1px;
-    }
-
-    .pane-select {
-      pointer-events: auto;
-      background: rgba(18, 19, 23, 0.84);
-      backdrop-filter: blur(8px);
-      color: #ffffff;
-      border: 1px solid rgba(255, 255, 255, 0.22);
-      border-radius: var(--radius-sm);
-      padding: 0.32rem 0.55rem;
-      font-family: 'Inter', sans-serif;
-      font-size: 0.73rem;
+      font-size: 0.76rem;
       font-weight: 500;
-      cursor: pointer;
     }
 
-    .pane-overlay-bottom {
+    .hud-step-num {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.66rem;
+      color: rgba(255, 255, 255, 0.55);
+    }
+
+    /* Sleek Glass Segmented Toggle inside 3D Viewport (No native <select>!) */
+    .hud-seg {
+      pointer-events: auto;
+      display: inline-flex;
+      background: rgba(20, 21, 26, 0.72);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      padding: 2px;
+      border-radius: var(--radius-pill);
+      gap: 1px;
+    }
+
+    .hud-seg-btn {
+      font-family: 'Inter', sans-serif;
+      font-size: 0.69rem;
+      font-weight: 500;
+      color: rgba(255, 255, 255, 0.6);
+      background: transparent;
+      border: none;
+      padding: 0.2rem 0.55rem;
+      border-radius: var(--radius-pill);
+      cursor: pointer;
+      transition: all 0.14s ease;
+    }
+
+    .hud-seg-btn:hover {
+      color: #ffffff;
+    }
+
+    .hud-seg-btn.active {
+      background: rgba(255, 255, 255, 0.18);
+      color: #ffffff;
+      font-weight: 600;
+    }
+
+    .pane-hud-bottom {
       position: absolute;
       bottom: 12px;
-      left: 12px;
-      right: 12px;
+      left: 14px;
+      right: 14px;
       display: flex;
       align-items: center;
       justify-content: space-between;
       pointer-events: none;
       z-index: 10;
-      gap: 0.4rem;
     }
 
-    .pane-badge {
+    .hud-caption {
       font-family: 'JetBrains Mono', monospace;
-      font-size: 0.7rem;
-      background: rgba(18, 19, 23, 0.76);
-      color: #d4d4d8;
-      padding: 0.24rem 0.55rem;
-      border-radius: 4px;
-      border: 1px solid rgba(255, 255, 255, 0.12);
-      display: inline-flex;
-      align-items: center;
-      gap: 0.4rem;
+      font-size: 0.68rem;
+      color: rgba(255, 255, 255, 0.45);
+      background: rgba(20, 21, 26, 0.55);
+      backdrop-filter: blur(8px);
+      padding: 0.2rem 0.55rem;
+      border-radius: 6px;
     }
 
     .loading-mask {
       position: absolute;
       inset: 0;
-      background: rgba(18, 19, 22, 0.55);
-      color: #ffffff;
+      background: rgba(19, 20, 23, 0.55);
+      backdrop-filter: blur(4px);
+      color: rgba(255, 255, 255, 0.8);
       font-family: 'JetBrains Mono', monospace;
-      font-size: 0.82rem;
+      font-size: 0.78rem;
       display: flex;
       align-items: center;
       justify-content: center;
       z-index: 20;
       pointer-events: none;
       opacity: 0;
-      transition: opacity 0.15s;
+      transition: opacity 0.18s ease;
     }
 
     .loading-mask.visible {
       opacity: 1;
     }
 
-    /* Bottom Interactive Controls Bar */
-    .shell-footer {
-      padding: 0.7rem 1.15rem;
-      background: var(--bg-elevated);
-      border-top: 1px solid var(--border-hairline);
+    /* Minimal Bottom Control Bar */
+    .stage-bottombar {
+      padding: 0.65rem 1.15rem;
+      background: var(--bg-surface);
+      border-top: 1px solid var(--border-subtle);
       display: flex;
       align-items: center;
       justify-content: space-between;
-      gap: 1.25rem;
+      gap: 1rem;
       flex-wrap: wrap;
     }
 
-    .controls-cluster {
+    .control-group {
       display: flex;
       align-items: center;
-      gap: 0.65rem;
+      gap: 0.55rem;
       flex-wrap: wrap;
     }
 
-    .inline-slider {
+    .slider-pill {
       display: inline-flex;
       align-items: center;
-      gap: 0.45rem;
-      font-size: 0.76rem;
+      gap: 0.5rem;
+      font-size: 0.75rem;
       color: var(--text-secondary);
-      background: var(--bg-surface);
-      padding: 0.28rem 0.65rem;
+      background: var(--bg-subtle);
+      padding: 0.26rem 0.65rem;
       border-radius: var(--radius-sm);
-      border: 1px solid var(--border-hairline);
     }
 
-    .inline-slider input[type="range"] {
-      width: 95px;
-      accent-color: var(--accent-primary);
+    .slider-pill input[type="range"] {
+      width: 88px;
+      accent-color: var(--text-primary);
       cursor: pointer;
     }
 
-    /* Gallery Section */
-    .section-header {
+    /* =========================================================================
+       Clean Object Explorer Grid
+       ========================================================================= */
+    .explorer-header {
       display: flex;
-      align-items: baseline;
+      align-items: center;
       justify-content: space-between;
       gap: 1rem;
-      margin-bottom: 0.85rem;
+      margin-bottom: 1rem;
       flex-wrap: wrap;
     }
 
-    .section-title {
-      font-size: 1.12rem;
+    .explorer-title {
+      font-size: 1.05rem;
       font-weight: 600;
+      letter-spacing: -0.01em;
       display: flex;
-      align-items: center;
-      gap: 0.5rem;
+      align-items: baseline;
+      gap: 0.55rem;
     }
 
-    .gallery-controls {
-      background: var(--bg-surface);
-      border: 1px solid var(--border-hairline);
-      border-radius: var(--radius-md);
-      padding: 0.8rem 1rem;
-      margin-bottom: 1rem;
+    .explorer-sub {
+      font-size: 0.8rem;
+      font-weight: 400;
+      color: var(--text-muted);
+    }
+
+    .explorer-toolbar {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      gap: 0.85rem;
+      gap: 0.75rem;
+      margin-bottom: 1.15rem;
       flex-wrap: wrap;
-      box-shadow: var(--shadow-sm);
     }
 
-    .filter-pills {
+    .filter-strip {
       display: flex;
       align-items: center;
       gap: 0.35rem;
       flex-wrap: wrap;
     }
 
-    .filter-pill {
+    .chip {
+      font-family: 'Inter', sans-serif;
       font-size: 0.76rem;
       font-weight: 500;
-      padding: 0.32rem 0.7rem;
-      border-radius: 999px;
-      border: 1px solid var(--border-hairline);
-      background: var(--bg-elevated);
+      padding: 0.36rem 0.78rem;
+      border-radius: var(--radius-pill);
+      border: 1px solid var(--border-subtle);
+      background: var(--bg-surface);
       color: var(--text-secondary);
       cursor: pointer;
-      transition: all 0.12s;
+      transition: all 0.14s ease;
     }
 
-    .filter-pill:hover {
+    .chip:hover {
       border-color: var(--border-strong);
       color: var(--text-primary);
     }
 
-    .filter-pill.active {
+    .chip.active {
       background: var(--text-primary);
-      color: #ffffff;
       border-color: var(--text-primary);
+      color: #ffffff;
     }
 
-    .search-input {
+    .search-box {
       font-family: 'Inter', sans-serif;
       font-size: 0.78rem;
-      padding: 0.38rem 0.7rem;
-      border-radius: var(--radius-sm);
+      padding: 0.4rem 0.8rem;
+      border-radius: var(--radius-pill);
       border: 1px solid var(--border-strong);
       background: var(--bg-surface);
-      min-width: 200px;
+      color: var(--text-primary);
+      min-width: 210px;
+      outline: none;
+      transition: border-color 0.14s ease;
+    }
+
+    .search-box:focus {
+      border-color: var(--text-primary);
     }
 
     .gallery-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(195px, 1fr));
-      gap: 0.75rem;
+      grid-template-columns: repeat(auto-fill, minmax(175px, 1fr));
+      gap: 0.85rem;
     }
 
     .gallery-card {
       background: var(--bg-surface);
-      border: 1px solid var(--border-hairline);
+      border: 1px solid var(--border-subtle);
       border-radius: var(--radius-md);
       overflow: hidden;
       cursor: pointer;
-      transition: transform 0.14s ease, box-shadow 0.14s ease, border-color 0.14s ease;
+      transition: transform 0.18s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.18s ease, border-color 0.18s ease;
       display: flex;
       flex-direction: column;
-      box-shadow: var(--shadow-sm);
+      box-shadow: var(--shadow-card);
     }
 
     .gallery-card:hover {
-      transform: translateY(-2px);
-      box-shadow: var(--shadow-md);
+      transform: translateY(-3px);
+      box-shadow: 0 10px 24px rgba(0, 0, 0, 0.06);
       border-color: var(--border-strong);
     }
 
     .gallery-card.selected {
-      border-color: var(--accent-primary);
-      box-shadow: 0 0 0 2px rgba(29, 78, 216, 0.22);
+      border-color: var(--text-primary);
+      box-shadow: 0 0 0 2px var(--text-primary);
     }
 
     .gallery-thumb-wrap {
-      height: 130px;
+      aspect-ratio: 4 / 3;
       background: #ffffff;
       display: flex;
       align-items: center;
       justify-content: center;
-      padding: 0.5rem;
+      padding: 0.65rem;
       position: relative;
-      border-bottom: 1px solid var(--border-hairline);
     }
 
     .gallery-thumb-wrap img {
       width: 100%;
       height: 100%;
       object-fit: contain;
+      transition: transform 0.2s ease;
     }
 
-    .card-id-tag {
+    .gallery-card:hover .gallery-thumb-wrap img {
+      transform: scale(1.04);
+    }
+
+    .card-ds-badge {
       position: absolute;
-      top: 6px;
-      left: 6px;
+      top: 8px;
+      right: 8px;
       font-family: 'JetBrains Mono', monospace;
-      font-size: 0.68rem;
-      font-weight: 600;
-      padding: 1px 5px;
+      font-size: 0.64rem;
+      font-weight: 500;
+      padding: 2px 6px;
       border-radius: 4px;
-      background: rgba(22, 22, 24, 0.75);
-      color: #fff;
-    }
-
-    .card-ds-tag {
-      position: absolute;
-      top: 6px;
-      right: 6px;
+      background: var(--bg-subtle);
+      color: var(--text-secondary);
     }
 
     .gallery-card-body {
-      padding: 0.6rem 0.75rem;
+      padding: 0.6rem 0.75rem 0.7rem;
+      border-top: 1px solid var(--border-subtle);
       display: flex;
       flex-direction: column;
-      gap: 0.2rem;
+      gap: 0.15rem;
     }
 
     .gallery-card-title {
-      font-size: 0.82rem;
+      font-size: 0.8rem;
       font-weight: 600;
       color: var(--text-primary);
       white-space: nowrap;
@@ -716,8 +764,7 @@
     }
 
     .gallery-card-sub {
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 0.68rem;
+      font-size: 0.7rem;
       color: var(--text-muted);
       display: flex;
       justify-content: space-between;
@@ -727,8 +774,8 @@
     .modal-backdrop {
       position: fixed;
       inset: 0;
-      background: rgba(16, 16, 20, 0.8);
-      backdrop-filter: blur(5px);
+      background: rgba(15, 16, 20, 0.72);
+      backdrop-filter: blur(6px);
       z-index: 500;
       display: none;
       align-items: center;
@@ -743,40 +790,40 @@
     .modal-content {
       background: var(--bg-surface);
       border-radius: var(--radius-lg);
-      max-width: 1280px;
+      max-width: 1240px;
       max-height: 90vh;
       width: 100%;
       overflow: auto;
-      padding: 1.25rem;
-      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.35);
+      padding: 1.5rem;
+      box-shadow: 0 24px 60px rgba(0, 0, 0, 0.3);
     }
 
     .modal-header {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      margin-bottom: 1rem;
-      padding-bottom: 0.65rem;
-      border-bottom: 1px solid var(--border-hairline);
+      margin-bottom: 1.15rem;
+      padding-bottom: 0.75rem;
+      border-bottom: 1px solid var(--border-subtle);
     }
 
     .comp-five-grid {
       display: grid;
       grid-template-columns: repeat(5, 1fr);
-      gap: 0.75rem;
+      gap: 0.85rem;
     }
 
     .comp-item {
-      border: 1px solid var(--border-hairline);
-      border-radius: var(--radius-sm);
-      padding: 0.65rem;
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-md);
+      padding: 0.75rem;
       background: #ffffff;
       text-align: center;
     }
 
     .comp-item.ours {
-      border-color: var(--accent-teal);
-      background: #f6fefc;
+      border-color: var(--text-primary);
+      background: #fafaf9;
     }
 
     .comp-item img {
@@ -784,10 +831,10 @@
       height: auto;
       max-height: 210px;
       object-fit: contain;
-      margin-top: 0.4rem;
+      margin-top: 0.45rem;
     }
 
-    @media (max-width: 1180px) {
+    @media (max-width: 1120px) {
       .pipeline-3d-grid {
         grid-template-columns: 200px 1fr 1fr;
       }
@@ -796,326 +843,253 @@
       }
     }
 
-    @media (max-width: 820px) {
+    @media (max-width: 780px) {
       .pipeline-3d-grid {
         grid-template-columns: 1fr;
         height: auto;
       }
       .stage-3d-pane {
-        height: 380px;
+        height: 360px;
       }
       .comp-five-grid {
         grid-template-columns: 1fr 1fr;
       }
     }
-
-    /* TL;DR Callout Banner */
-    .tldr-banner {
-      background: var(--bg-surface);
-      border: 1px solid var(--border-hairline);
-      border-left: 4px solid var(--accent-primary);
-      border-radius: var(--radius-md);
-      padding: 0.85rem 1.15rem;
-      margin-bottom: 1rem;
-      box-shadow: var(--shadow-sm);
-      font-size: 0.88rem;
-      color: var(--text-secondary);
-      line-height: 1.55;
-      display: flex;
-      align-items: baseline;
-      gap: 0.65rem;
-      flex-wrap: wrap;
-    }
-
-    .tldr-tag {
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 0.74rem;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 0.04em;
-      background: var(--accent-primary-soft);
-      color: var(--accent-primary);
-      padding: 0.16rem 0.5rem;
-      border-radius: 4px;
-      flex-shrink: 0;
-    }
-
-    .tldr-banner strong {
-      color: var(--text-primary);
-      font-weight: 600;
-    }
   </style>
 </head>
 <body>
 
-  <!-- Top Navigation & Model Switcher -->
-  <header class="top-bar">
-    <div class="top-bar-inner">
-      <div class="brand-group">
-        <div class="brand-title-row">
-          <a href="#" class="brand-logo">un<span>PIC</span></a>
-          <span class="brand-paper-title">How to Spin an Object: First, Get the Shape Right</span>
-        </div>
-        <div class="brand-authors-row">
-          <span>Rishabh Kabra, Drew A. Hudson, Sjoerd van Steenkiste, João Carreira, Niloy J. Mitra</span>
-          <span style="color: var(--border-strong);">•</span>
-          <div class="paper-links">
-            <a class="paper-link-pill" href="https://openaccess.thecvf.com/content/CVPR2026W/GenRecon3d/html/Kabra_How_to_Spin_an_Object_First_Get_the_Shape_Right_CVPRW_2026_paper.html" target="_blank" rel="noopener noreferrer">📄 Paper (CVPRW 2026)</a>
-            <a class="paper-link-pill" href="https://openaccess.thecvf.com/content/CVPR2026W/GenRecon3d/papers/Kabra_How_to_Spin_an_Object_First_Get_the_Shape_Right_CVPRW_2026_paper.pdf" target="_blank" rel="noopener noreferrer">📥 PDF</a>
-            <a class="paper-link-pill" href="https://github.com/google-deepmind/unpic" target="_blank" rel="noopener noreferrer">💻 GitHub Code</a>
-          </div>
-        </div>
+  <div class="page-wrap">
+
+    <!-- Editorial Academic Hero Header -->
+    <header class="hero">
+      <h1 class="hero-title">
+        <span class="brand-mark">unPIC:</span>How to Spin an Object: First, Get the Shape Right
+      </h1>
+
+      <div class="hero-authors">
+        <span>Rishabh Kabra</span>
+        <span>Drew A. Hudson</span>
+        <span>Sjoerd van Steenkiste</span>
+        <span>João Carreira</span>
+        <span>Niloy J. Mitra</span>
       </div>
 
-      <div class="nav-controls">
-        <button class="btn" id="prevModelBtn" title="Previous object (Left Arrow)">← Prev</button>
-        <select class="model-select" id="modelSelect" aria-label="Select 3D object"></select>
-        <button class="btn" id="nextModelBtn" title="Next object (Right Arrow)">Next →</button>
+      <div class="hero-links">
+        <a class="hero-pill" href="https://openaccess.thecvf.com/content/CVPR2026W/GenRecon3d/html/Kabra_How_to_Spin_an_Object_First_Get_the_Shape_Right_CVPRW_2026_paper.html" target="_blank" rel="noopener noreferrer">
+          <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+          Paper (CVPRW 2026)
+        </a>
+        <a class="hero-pill" href="https://openaccess.thecvf.com/content/CVPR2026W/GenRecon3d/papers/Kabra_How_to_Spin_an_Object_First_Get_the_Shape_Right_CVPRW_2026_paper.pdf" target="_blank" rel="noopener noreferrer">
+          <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          PDF
+        </a>
+        <a class="hero-pill" href="https://github.com/google-deepmind/unpic" target="_blank" rel="noopener noreferrer">
+          <svg viewBox="0 0 24 24"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+          GitHub Code
+        </a>
       </div>
-    </div>
-  </header>
 
-  <main class="container">
-
-    <!-- TL;DR Banner -->
-    <div class="tldr-banner">
-      <span class="tldr-tag">TL;DR</span>
-      <span>
+      <p class="hero-tldr">
+        <span class="tldr-badge">TL;DR</span>
         Given a single 2D image, <strong>unPIC</strong> reconstructs 3D objects via a <strong>shape-first hierarchical pipeline</strong>: it first predicts canonical <strong>3D Normalized Object Coordinates (NOCS)</strong> in <code>[0, 1]³</code> to establish global 3D geometry, then synthesizes appearance (RGB) conditioned on those 3D coordinates to unproject a <strong>dense 3D RGB point cloud</strong> and reconstruct a <strong>Screened Poisson 3D mesh</strong>.
-      </span>
-    </div>
+      </p>
+    </header>
 
-    <!-- Main Full-3D Hierarchical Pipeline Workbench -->
-    <section class="pipeline-3d-shell">
-      <!-- Top Bar: Active Object Metadata & Layout Mode -->
-      <div class="shell-header">
-        <div class="object-headline">
-          <span class="id-badge" id="activeIdBadge">#0 / 40</span>
-          <span class="dataset-pill dtc" id="activeDatasetBadge">DTC</span>
-          <span class="object-title" id="activeTitle">Yellow Mallard Duck</span>
-          <span class="object-uid" id="activeUid">Mallard_B088Z8SJ9L_YellowLeft</span>
+    <!-- Main Full-3D Interactive Stage -->
+    <section class="stage-card">
+
+      <!-- Top Bar -->
+      <div class="stage-topbar">
+        <div class="active-object-nav">
+          <button class="icon-btn" id="prevModelBtn" title="Previous object (Left Arrow)" aria-label="Previous object">←</button>
+          <select class="object-picker" id="modelSelect" aria-label="Select 3D object"></select>
+          <button class="icon-btn" id="nextModelBtn" title="Next object (Right Arrow)" aria-label="Next object">→</button>
+          <span class="meta-tag" id="activeCategoryBadge">Animals &amp; Figurines</span>
         </div>
 
-        <div style="display: flex; align-items: center; gap: 0.6rem; flex-wrap: wrap;">
-          <span style="font-size: 0.75rem; color: var(--text-secondary); font-weight: 500;">3D Viewports:</span>
-          <div class="segmented-control" id="layoutSegmented">
-            <button class="seg-btn active" data-layout="three">All 3 Stages (3D NOCS → 3D Point Cloud → 3D Mesh)</button>
-            <button class="seg-btn" data-layout="single">Single Large 3D</button>
+        <div class="stage-topbar-right">
+          <div class="pill-group" id="layoutSegmented">
+            <button class="pill-btn active" data-layout="three">All 3 Stages (NOCS → Point Cloud → Mesh)</button>
+            <button class="pill-btn" data-layout="single">Single Large 3D</button>
           </div>
-          <button class="btn btn-sm" id="openComparisonBtn">Compare vs. InstantMesh &amp; Direct3D</button>
+          <button class="action-btn" id="openComparisonBtn">Compare vs. Baselines</button>
         </div>
       </div>
 
-      <!-- 4-Column Interactive Pipeline: [2D Input] -> [3D NOCS] -> [3D RGB Point Cloud] -> [3D RGB Mesh] -->
+      <!-- 4-Column Pipeline Grid: [2D Input] -> [Stage 1: 3D NOCS] -> [Stage 2: 3D Point Cloud] -> [Stage 3: 3D Mesh] -->
       <div class="pipeline-3d-grid" id="pipeline3dGrid">
 
-        <!-- Column 0: Single 2D Input Image & Stats -->
-        <aside class="input-sidebar">
+        <!-- Column 0: Conditioning 2D Image -->
+        <aside class="input-pane">
           <div>
             <div style="display: flex; align-items: center; justify-content: space-between;">
-              <div class="stage-kicker">Conditioning Input</div>
-              <button class="btn btn-sm" style="padding: 1px 6px; font-size: 0.68rem;" id="toggleInputBgBtn">BG</button>
+              <div class="pane-kicker">Input</div>
+              <button class="dark-btn" style="padding: 1px 7px; font-size: 0.66rem;" id="toggleInputBgBtn" title="Toggle white/gray background">BG</button>
             </div>
-            <div class="stage-heading">Single 2D Image</div>
-            <div class="input-img-frame" id="inputImgFrame">
+            <div class="pane-heading">Single 2D Image</div>
+
+            <div class="input-preview-box" id="inputImgFrame">
               <img id="inputImg" src="assets/input_white/0.png" alt="2D Input Image" />
             </div>
-            <p style="font-size: 0.74rem; color: var(--text-secondary); line-height: 1.45;">
-              Drag with your mouse inside any 3D viewport on the right to rotate the object in full 3D. All 3D stages rotate in sync.
+
+            <p class="input-hint">
+              Drag with your mouse inside any 3D viewport to orbit. All three stages rotate in lockstep.
             </p>
           </div>
 
-          <div class="stats-list">
-            <div class="stat-row">
-              <span>3D Points (.ply):</span>
-              <strong id="statPoints">92,779</strong>
+          <div class="input-bottom">
+            <div class="metric-mini">
+              <span>Chamfer Dist (×10⁻³)</span>
+              <strong id="statCdOurs">7.80</strong>
             </div>
-            <div class="stat-row">
-              <span>Mesh Vertices:</span>
-              <strong id="statVertices">51,429</strong>
-            </div>
-            <div class="stat-row">
-              <span>Mesh Faces (.obj):</span>
-              <strong id="statFaces">102,771</strong>
-            </div>
-            <div class="stat-row">
-              <span>unPIC CD (×10⁻³):</span>
-              <strong style="color: var(--accent-teal);" id="statCdOurs">7.80</strong>
-            </div>
-            <div class="stat-row">
-              <span>Direct3D / IM CD:</span>
-              <strong id="statCdBaselines">8.00 / 13.47</strong>
-            </div>
-            <div style="display: flex; gap: 0.35rem; margin-top: 0.35rem;">
-              <button type="button" class="btn btn-sm" style="flex: 1; justify-content: center;" id="downloadPlyBtn">⬇ .ply</button>
-              <button type="button" class="btn btn-sm" style="flex: 1; justify-content: center;" id="downloadObjBtn">⬇ .obj</button>
+            <div class="export-row">
+              <button type="button" class="dark-btn" id="downloadPlyBtn">↓ .PLY</button>
+              <button type="button" class="dark-btn" id="downloadObjBtn">↓ .OBJ</button>
             </div>
           </div>
         </aside>
 
-        <!-- Column 1: Stage 1 — Full 3D NOCS Prior -->
+        <!-- Stage 1: Full 3D NOCS Prior -->
         <div class="stage-3d-pane" id="paneNocs">
-          <div class="pane-overlay-top">
-            <div class="pane-title-card">
-              <div class="pane-step-tag">
-                <span style="width: 7px; height: 7px; border-radius: 50%; background: #f43f5e; display: inline-block;"></span>
-                Stage 1 • Shape Prior (Full 3D)
-              </div>
-              <div class="pane-main-label">3D NOCS Coordinates (R,G,B = X,Y,Z)</div>
+          <div class="pane-hud-top">
+            <div class="hud-label">
+              <span class="hud-step-num">01</span>
+              <span>3D Shape Prior (NOCS)</span>
             </div>
-            <select class="pane-select" id="nocsRenderSelect" aria-label="Stage 1 3D NOCS representation">
-              <option value="pc_nocs" selected>3D NOCS Point Cloud</option>
-              <option value="mesh_nocs">3D NOCS Surface Mesh</option>
-            </select>
+            <div class="hud-seg" data-pane="nocs">
+              <button class="hud-seg-btn active" data-mode="pc_nocs">Points</button>
+              <button class="hud-seg-btn" data-mode="mesh_nocs">Surface</button>
+            </div>
           </div>
 
           <canvas class="stage-canvas" id="canvasNocs"></canvas>
 
-          <div class="pane-overlay-bottom">
-            <span class="pane-badge">
-              <span style="color: #f87171;">X=R</span>
-              <span style="color: #4ade80;">Y=G</span>
-              <span style="color: #60a5fa;">Z=B</span>
-              • Unit Cube [0, 1]³
-            </span>
-            <span class="pane-badge">Drag to rotate 3D</span>
+          <div class="pane-hud-bottom">
+            <span class="hud-caption">(R, G, B) = (X, Y, Z) ∈ [0, 1]³</span>
           </div>
-          <div class="loading-mask" id="loadingNocs">Loading 3D NOCS...</div>
+          <div class="loading-mask" id="loadingNocs">Loading 3D...</div>
         </div>
 
-        <!-- Column 2: Stage 2 — Full 3D RGB Point Cloud -->
+        <!-- Stage 2: Full 3D RGB Point Cloud -->
         <div class="stage-3d-pane" id="panePc">
-          <div class="pane-overlay-top">
-            <div class="pane-title-card">
-              <div class="pane-step-tag">
-                <span style="width: 7px; height: 7px; border-radius: 50%; background: #38bdf8; display: inline-block;"></span>
-                Stage 2 • Unprojected RGB (Full 3D)
-              </div>
-              <div class="pane-main-label">Dense 3D RGB Point Cloud (.ply)</div>
+          <div class="pane-hud-top">
+            <div class="hud-label">
+              <span class="hud-step-num">02</span>
+              <span>3D RGB Point Cloud</span>
             </div>
-            <select class="pane-select" id="pcRenderSelect" aria-label="Stage 2 3D Point Cloud representation">
-              <option value="pc_rgb" selected>3D Point Cloud (Decoded RGB)</option>
-              <option value="pc_nocs">3D Point Cloud (NOCS XYZ)</option>
-            </select>
+            <div class="hud-seg" data-pane="pc">
+              <button class="hud-seg-btn active" data-mode="pc_rgb">RGB</button>
+              <button class="hud-seg-btn" data-mode="pc_nocs">NOCS</button>
+            </div>
           </div>
 
           <canvas class="stage-canvas" id="canvasPc"></canvas>
 
-          <div class="pane-overlay-bottom">
-            <span class="pane-badge" id="pcCountBadge">92,779 unprojected 3D points</span>
-            <span class="pane-badge">Synced 3D Camera</span>
+          <div class="pane-hud-bottom">
+            <span class="hud-caption" id="pcCountBadge">92,779 points</span>
           </div>
-          <div class="loading-mask" id="loadingPc">Loading 3D Point Cloud...</div>
+          <div class="loading-mask" id="loadingPc">Loading 3D...</div>
         </div>
 
-        <!-- Column 3: Stage 3 — Full 3D Screened Poisson Mesh -->
+        <!-- Stage 3: Full 3D Screened Poisson Mesh -->
         <div class="stage-3d-pane" id="paneMesh">
-          <div class="pane-overlay-top">
-            <div class="pane-title-card">
-              <div class="pane-step-tag">
-                <span style="width: 7px; height: 7px; border-radius: 50%; background: #34d399; display: inline-block;"></span>
-                Stage 3 • Surface Mesh (Full 3D)
-              </div>
-              <div class="pane-main-label">Screened Poisson 3D Mesh (.obj)</div>
+          <div class="pane-hud-top">
+            <div class="hud-label">
+              <span class="hud-step-num">03</span>
+              <span>Screened Poisson Mesh</span>
             </div>
-            <select class="pane-select" id="meshRenderSelect" aria-label="Stage 3 3D Mesh shading">
-              <option value="mesh_rgb" selected>3D Mesh (RGB Vertex Colors)</option>
-              <option value="mesh_wire">3D Mesh + Wireframe</option>
-              <option value="mesh_clay">3D Mesh (Clay Shading)</option>
-              <option value="mesh_normals">3D Mesh (Surface Normals)</option>
-              <option value="mesh_nocs">3D Mesh (NOCS XYZ Colors)</option>
-              <option value="pc_rgb">3D Point Cloud (RGB)</option>
-            </select>
+            <div class="hud-seg" data-pane="mesh">
+              <button class="hud-seg-btn active" data-mode="mesh_rgb">RGB</button>
+              <button class="hud-seg-btn" data-mode="mesh_clay">Clay</button>
+              <button class="hud-seg-btn" data-mode="mesh_normals">Normals</button>
+              <button class="hud-seg-btn" data-mode="mesh_wire">Wire</button>
+            </div>
           </div>
 
           <canvas class="stage-canvas" id="canvasMesh"></canvas>
 
-          <div class="pane-overlay-bottom">
-            <span class="pane-badge" id="meshCountBadge">51,429 V • 102,771 Triangles</span>
-            <span class="pane-badge">Synced 3D Camera</span>
+          <div class="pane-hud-bottom">
+            <span class="hud-caption" id="meshCountBadge">102,771 triangles</span>
           </div>
-          <div class="loading-mask" id="loadingMesh">Loading 3D Mesh...</div>
+          <div class="loading-mask" id="loadingMesh">Loading 3D...</div>
         </div>
 
       </div>
 
-      <!-- Bottom Interactive 3D Controls Bar -->
-      <div class="shell-footer">
-        <div class="controls-cluster">
-          <button class="btn btn-sm" id="resetCamBtn">Reset 3D View</button>
-          <button class="btn btn-sm" id="toggleAutoRotateBtn">⟳ Auto-Rotate: Off</button>
-          <button class="btn btn-sm" id="toggleNocsBoxBtn">✓ [0, 1]³ NOCS Cube &amp; Axes</button>
+      <!-- Minimal Bottom Controls Bar -->
+      <div class="stage-bottombar">
+        <div class="control-group">
+          <button class="action-btn" id="resetCamBtn">Reset View</button>
+          <button class="action-btn" id="toggleAutoRotateBtn">Auto-Rotate: Off</button>
+          <button class="action-btn" id="toggleNocsBoxBtn">NOCS Cube: On (Stage 1)</button>
 
-          <div class="inline-slider">
-            <span>2D → 3D Unproject:</span>
+          <div class="slider-pill">
+            <span>2D → 3D Unproject</span>
             <input type="range" id="unprojectSlider" min="0" max="100" value="100" step="1" />
-            <strong style="font-family: 'JetBrains Mono', monospace; min-width: 36px;" id="unprojectVal">100%</strong>
-            <button class="btn btn-sm btn-primary" style="padding: 2px 7px;" id="animateUnprojectBtn">▶ Morph</button>
+            <button class="pill-btn active" style="padding: 2px 8px;" id="animateUnprojectBtn">Morph</button>
           </div>
 
-          <div class="inline-slider">
-            <span>Point Size:</span>
+          <div class="slider-pill">
+            <span>Point Size</span>
             <input type="range" id="pointSizeSlider" min="8" max="55" value="22" step="1" />
           </div>
         </div>
 
-        <div class="controls-cluster">
-          <span style="font-size: 0.74rem; color: var(--text-secondary);">3D Backdrop:</span>
-          <div class="segmented-control" id="bgSegmented">
-            <button class="seg-btn active" data-bg="#121316">Dark</button>
-            <button class="seg-btn" data-bg="#7f7f7f">Gray</button>
-            <button class="seg-btn" data-bg="#f5f5f4">Light</button>
+        <div class="control-group">
+          <div class="pill-group" id="bgSegmented">
+            <button class="pill-btn active" data-bg="#131417">Dark</button>
+            <button class="pill-btn" data-bg="#7f7f7f">Gray</button>
+            <button class="pill-btn" data-bg="#f4f4f2">Light</button>
           </div>
         </div>
       </div>
+
     </section>
 
-    <!-- All 40 Hand-Picked Reconstructions Selector Grid -->
+    <!-- All 40 Reconstructions Gallery -->
     <section id="gallery-section">
-      <div class="section-header">
-        <div class="section-title">
-          All 40 Hand-Picked Reconstructions
-          <span style="font-size: 0.82rem; font-weight: 400; color: var(--text-secondary);" id="galleryCountLabel">
-            (Click any object to inspect in full 3D above • Use ← / → arrow keys)
-          </span>
-        </div>
-      </div>
-
-      <div class="gallery-controls">
-        <div class="filter-pills" id="datasetFilterPills">
-          <button class="filter-pill active" data-filter="all">All 40 Objects</button>
-          <button class="filter-pill" data-filter="DTC">Digital Twin Catalog — DTC (28)</button>
-          <button class="filter-pill" data-filter="GSO">Google Scanned Objects — GSO (12)</button>
-        </div>
-
-        <div class="filter-pills" id="categoryFilterPills">
-          <button class="filter-pill active" data-cat="all">All Categories</button>
-          <button class="filter-pill" data-cat="Animals & Figurines">Animals &amp; Figurines (11)</button>
-          <button class="filter-pill" data-cat="Teapots & Ceramics">Teapots &amp; Ceramics (10)</button>
-          <button class="filter-pill" data-cat="Toys & Games">Toys &amp; Games (8)</button>
-          <button class="filter-pill" data-cat="Footwear & Apparel">Footwear &amp; Apparel (4)</button>
-          <button class="filter-pill" data-cat="Food & Fruit">Food &amp; Fruit (4)</button>
-          <button class="filter-pill" data-cat="Household & Everyday">Household (3)</button>
+      <div class="explorer-header">
+        <div class="explorer-title">
+          All 40 Reconstructions
+          <span class="explorer-sub" id="galleryCountLabel">Showing 40 objects • Click any object to inspect in 3D</span>
         </div>
 
         <div style="display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap;">
-          <select class="model-select" style="min-width: 185px;" id="sortSelect" aria-label="Sort objects">
-            <option value="id">Sort: Default Order (#0–#39)</option>
-            <option value="cd_asc">Sort: Lowest unPIC Chamfer Dist</option>
-            <option value="gain_d3d">Sort: Largest Gain vs. Direct3D</option>
-            <option value="gain_im">Sort: Largest Gain vs. InstantMesh</option>
-            <option value="points_desc">Sort: Point Count (High → Low)</option>
+          <div class="pill-group" id="datasetFilterPills">
+            <button class="pill-btn active" data-filter="all">All (40)</button>
+            <button class="pill-btn" data-filter="DTC">DTC (28)</button>
+            <button class="pill-btn" data-filter="GSO">GSO (12)</button>
+          </div>
+          <select class="object-picker" style="min-width: 170px; font-weight: 500; font-size: 0.78rem;" id="sortSelect" aria-label="Sort objects">
+            <option value="id">Sort: Default (#0–#39)</option>
+            <option value="cd_asc">Sort: Lowest Chamfer Dist</option>
+            <option value="gain_d3d">Sort: Gain vs. Direct3D</option>
+            <option value="gain_im">Sort: Gain vs. InstantMesh</option>
           </select>
-          <input type="search" class="search-input" id="searchInput" placeholder="Search name, category, or UID..." />
         </div>
+      </div>
+
+      <div class="explorer-toolbar">
+        <div class="filter-strip" id="categoryFilterPills">
+          <button class="chip active" data-cat="all">All Categories</button>
+          <button class="chip" data-cat="Animals & Figurines">Animals &amp; Figurines (11)</button>
+          <button class="chip" data-cat="Teapots & Ceramics">Teapots &amp; Ceramics (10)</button>
+          <button class="chip" data-cat="Toys & Games">Toys &amp; Games (8)</button>
+          <button class="chip" data-cat="Footwear & Apparel">Footwear &amp; Apparel (4)</button>
+          <button class="chip" data-cat="Food & Fruit">Food &amp; Fruit (4)</button>
+          <button class="chip" data-cat="Household & Everyday">Household (3)</button>
+        </div>
+
+        <input type="search" class="search-box" id="searchInput" placeholder="Search name, category, or UID..." />
       </div>
 
       <div class="gallery-grid" id="galleryGrid"></div>
     </section>
 
-  </main>
+  </div>
 
-  <!-- Baseline Comparison Modal (Ground Truth vs InstantMesh vs Direct3D vs unPIC) -->
+  <!-- Baseline Comparison Modal -->
   <div class="modal-backdrop" id="comparisonModal">
     <div class="modal-content">
       <div class="modal-header">
@@ -1125,7 +1099,7 @@
             Chamfer Distance (× 10⁻³, lower is better) evaluated on 8,192 points against Ground Truth mesh.
           </div>
         </div>
-        <button class="btn btn-sm" id="closeModalBtn">✕ Close (Esc)</button>
+        <button class="action-btn" id="closeModalBtn">✕ Close</button>
       </div>
       <div class="comp-five-grid">
         <div class="comp-item">
@@ -1143,13 +1117,13 @@
           <img id="compD3dImg" src="assets/comp_crops/0_direct3d.png" alt="Direct3D" />
         </div>
         <div class="comp-item ours">
-          <div style="font-size: 0.8rem; font-weight: 600; color: var(--accent-teal);">unPIC (Point Cloud)</div>
-          <div style="font-family: 'JetBrains Mono', monospace; font-size: 0.72rem; font-weight: 600; color: var(--accent-teal);" id="compOursCd">CD = 7.80e-3</div>
+          <div style="font-size: 0.8rem; font-weight: 600;">unPIC (Point Cloud)</div>
+          <div style="font-family: 'JetBrains Mono', monospace; font-size: 0.72rem; font-weight: 600;" id="compOursCd">CD = 7.80e-3</div>
           <img id="compOursPcImg" src="assets/comp_crops/0_unpic_pc.png" alt="unPIC Point Cloud" />
         </div>
         <div class="comp-item ours">
-          <div style="font-size: 0.8rem; font-weight: 600; color: var(--accent-teal);">unPIC (Poisson Mesh)</div>
-          <div style="font-family: 'JetBrains Mono', monospace; font-size: 0.72rem; color: var(--accent-teal);">Screened Poisson</div>
+          <div style="font-size: 0.8rem; font-weight: 600;">unPIC (Poisson Mesh)</div>
+          <div style="font-family: 'JetBrains Mono', monospace; font-size: 0.72rem; color: var(--text-secondary);">Screened Poisson</div>
           <img id="compOursMeshImg" src="assets/comp_crops/0_unpic_mesh.png" alt="unPIC Poisson Mesh" />
         </div>
       </div>
@@ -1179,7 +1153,8 @@
     let categoryFilter = 'all';
     let sortMode = 'id';
     let searchQuery = '';
-    let showNocsCube = true;
+    // Keep NOCS cube visible in Stage 1 by default for geometric reference, while keeping RGB stages clean
+    let cubeMode = 'nocs_only'; // 'nocs_only' | 'all' | 'off'
     let autoRotate = false;
     let unprojectionT = 1.0;
     let animFrameId = null;
@@ -1189,27 +1164,20 @@
     let activePcData = null;
     let activeMeshData = null;
 
-    // =========================================================================
-    // 1. Setup 3 Synchronized Full-3D Stages:
-    //    - Stage 1: 3D NOCS Prior (canvasNocs)
-    //    - Stage 2: 3D RGB Point Cloud (canvasPc)
-    //    - Stage 3: 3D Screened Poisson Mesh (canvasMesh)
-    // =========================================================================
     const panes = [
-      { id: 'nocs', canvas: document.getElementById('canvasNocs'), wrap: document.getElementById('paneNocs'), select: document.getElementById('nocsRenderSelect') },
-      { id: 'pc',   canvas: document.getElementById('canvasPc'),   wrap: document.getElementById('panePc'),   select: document.getElementById('pcRenderSelect') },
-      { id: 'mesh', canvas: document.getElementById('canvasMesh'), wrap: document.getElementById('paneMesh'), select: document.getElementById('meshRenderSelect') }
+      { id: 'nocs', mode: 'pc_nocs',  canvas: document.getElementById('canvasNocs'), wrap: document.getElementById('paneNocs') },
+      { id: 'pc',   mode: 'pc_rgb',   canvas: document.getElementById('canvasPc'),   wrap: document.getElementById('panePc') },
+      { id: 'mesh', mode: 'mesh_rgb', canvas: document.getElementById('canvasMesh'), wrap: document.getElementById('paneMesh') }
     ];
 
-    const sharedCamera = new THREE.PerspectiveCamera(40, 1, 0.01, 50);
+    const sharedCamera = new THREE.PerspectiveCamera(38, 1, 0.01, 50);
     const sharedTarget = new THREE.Vector3(0, 0, 0);
 
-    // Canonical view matching matplotlib view_init(elev=10°, azim=195°)
     const CANONICAL_CAM_DIR = new THREE.Vector3(-0.95105, 0.17365, 0.25489).normalize();
-    const CANONICAL_DIST = 1.82;
+    const CANONICAL_DIST = 1.78;
 
     function addStudioLights(scene) {
-      scene.add(new THREE.HemisphereLight(0xffffff, 0x444450, 1.15));
+      scene.add(new THREE.HemisphereLight(0xffffff, 0x444450, 1.2));
       const key = new THREE.DirectionalLight(0xffffff, 1.35);
       key.position.set(-3, 4, 3);
       scene.add(key);
@@ -1225,30 +1193,24 @@
       const group = new THREE.Group();
       const boxGeo = new THREE.BoxGeometry(1, 1, 1);
       const edges = new THREE.EdgesGeometry(boxGeo);
-      const lineMat = new THREE.LineBasicMaterial({ color: 0x888894, transparent: true, opacity: 0.32 });
+      const lineMat = new THREE.LineBasicMaterial({ color: 0x8a8b96, transparent: true, opacity: 0.28 });
       group.add(new THREE.LineSegments(edges, lineMat));
 
-      const grid = new THREE.GridHelper(1.0, 5, 0x666672, 0x44444e);
-      grid.position.y = -0.5;
-      grid.material.transparent = true;
-      grid.material.opacity = 0.35;
-      group.add(grid);
-
-      // NOCS origin (0,0,0) -> Three.js (-0.5, -0.5, +0.5)
       const origin = new THREE.Vector3(-0.5, -0.5, 0.5);
       group.add(
-        new THREE.ArrowHelper(new THREE.Vector3(1, 0, 0), origin, 1.04, 0xef4444, 0.045, 0.025),
-        new THREE.ArrowHelper(new THREE.Vector3(0, 0, -1), origin, 1.04, 0x22c55e, 0.045, 0.025),
-        new THREE.ArrowHelper(new THREE.Vector3(0, 1, 0), origin, 1.04, 0x3b82f6, 0.045, 0.025)
+        new THREE.ArrowHelper(new THREE.Vector3(1, 0, 0), origin, 1.02, 0xf87171, 0.038, 0.02),
+        new THREE.ArrowHelper(new THREE.Vector3(0, 0, -1), origin, 1.02, 0x4ade80, 0.038, 0.02),
+        new THREE.ArrowHelper(new THREE.Vector3(0, 1, 0), origin, 1.02, 0x60a5fa, 0.038, 0.02)
       );
       return group;
     }
 
     panes.forEach(p => {
       p.scene = new THREE.Scene();
-      p.scene.background = new THREE.Color('#121316');
+      p.scene.background = new THREE.Color('#131417');
       addStudioLights(p.scene);
       p.nocsCube = createNocsCubeGroup();
+      p.nocsCube.visible = (p.id === 'nocs');
       p.scene.add(p.nocsCube);
       p.contentGroup = new THREE.Group();
       p.scene.add(p.contentGroup);
@@ -1258,7 +1220,7 @@
       p.renderer.outputColorSpace = THREE.SRGBColorSpace;
 
       p.controls = new OrbitControls(sharedCamera, p.canvas);
-      p.controls.target = sharedTarget; // Share exact Vector3 target across all 3 viewports
+      p.controls.target = sharedTarget;
       p.controls.enableDamping = true;
       p.controls.dampingFactor = 0.08;
     });
@@ -1272,7 +1234,7 @@
     resetCamera();
 
     // =========================================================================
-    // 2. Binary Loaders for Point Cloud (.bin) & Screened Poisson Mesh (.bin)
+    // Binary Loaders
     // =========================================================================
     async function loadPointCloudData(id) {
       if (pcBufferCache.has(id)) return pcBufferCache.get(id);
@@ -1419,7 +1381,7 @@
     }
 
     // =========================================================================
-    // 3. Build 3D Scene Objects per Pane
+    // Build 3D Scene Objects
     // =========================================================================
     function clearGroup(group) {
       while (group.children.length > 0) {
@@ -1474,7 +1436,7 @@
       } else if (mode === 'mesh_clay') {
         mat = new THREE.MeshStandardMaterial({
           color: 0xd6d3cd,
-          roughness: 0.52,
+          roughness: 0.48,
           metalness: 0.08,
           side: THREE.DoubleSide
         });
@@ -1482,8 +1444,8 @@
         mat = new THREE.MeshStandardMaterial({
           color: 0xffffff,
           vertexColors: true,
-          roughness: 0.65,
-          metalness: 0.1,
+          roughness: 0.62,
+          metalness: 0.08,
           side: THREE.DoubleSide
         });
       }
@@ -1509,11 +1471,10 @@
       if (!activePcData || !activeMeshData) return;
       panes.forEach(p => {
         clearGroup(p.contentGroup);
-        const mode = p.select.value;
-        if (mode.startsWith('pc_')) {
-          p.contentGroup.add(buildPointCloud3D(activePcData, mode));
+        if (p.mode.startsWith('pc_')) {
+          p.contentGroup.add(buildPointCloud3D(activePcData, p.mode));
         } else {
-          p.contentGroup.add(buildMesh3D(activeMeshData, mode));
+          p.contentGroup.add(buildMesh3D(activeMeshData, p.mode));
         }
       });
     }
@@ -1540,36 +1501,22 @@
     }
 
     // =========================================================================
-    // 4. Select Object & Update All 3D Stages
+    // Select Object & Update All 3D Stages
     // =========================================================================
     async function selectModel(id) {
       currentId = id;
       const m = MODELS[id];
 
-      document.getElementById('activeIdBadge').textContent = `#${id} / 40`;
-      const dsBadge = document.getElementById('activeDatasetBadge');
-      dsBadge.textContent = m.dataset_short;
-      dsBadge.className = `dataset-pill ${m.dataset_short.toLowerCase()}`;
-      document.getElementById('activeTitle').textContent = m.title;
-      document.getElementById('activeUid').textContent = m.uid;
       document.getElementById('modelSelect').value = String(id);
+      document.getElementById('activeCategoryBadge').textContent = `${m.dataset_short} • ${m.category}`;
 
       updateInputThumbnail();
-      document.getElementById('statPoints').textContent = m.points.toLocaleString();
-      document.getElementById('statVertices').textContent = m.vertices.toLocaleString();
-      document.getElementById('statFaces').textContent = m.faces.toLocaleString();
       document.getElementById('statCdOurs').textContent = `${m.chamfer.unpic.toFixed(2)}`;
-      document.getElementById('statCdBaselines').textContent =
-        `${m.chamfer.direct3d.toFixed(2)} / ${m.chamfer.instantmesh.toFixed(2)}`;
+      document.getElementById('pcCountBadge').textContent = `${m.points.toLocaleString()} points`;
+      document.getElementById('meshCountBadge').textContent = `${m.faces.toLocaleString()} triangles`;
 
-      document.getElementById('pcCountBadge').textContent =
-        `${m.points.toLocaleString()} unprojected 3D points`;
-      document.getElementById('meshCountBadge').textContent =
-        `${m.vertices.toLocaleString()} V • ${m.faces.toLocaleString()} Triangles`;
-
-      // Update Comparison Modal images
       document.getElementById('modalTitle').textContent =
-        `#${id} ${m.title} — 3D Comparison vs. InstantMesh & Direct3D`;
+        `#${id} ${m.title} — Comparison vs. InstantMesh & Direct3D`;
       document.getElementById('compGtImg').src = `assets/comp_crops/${id}_gt.png`;
       document.getElementById('compImImg').src = `assets/comp_crops/${id}_instantmesh.png`;
       document.getElementById('compD3dImg').src = `assets/comp_crops/${id}_direct3d.png`;
@@ -1615,7 +1562,7 @@
     }
 
     // =========================================================================
-    // 5. Gallery Grid & Controls
+    // Gallery Grid & Filtering
     // =========================================================================
     function normalizeSearchText(str) {
       return str
@@ -1648,7 +1595,6 @@
         if (sortMode === 'cd_asc') return a.chamfer.unpic - b.chamfer.unpic;
         if (sortMode === 'gain_d3d') return (b.chamfer.direct3d - b.chamfer.unpic) - (a.chamfer.direct3d - a.chamfer.unpic);
         if (sortMode === 'gain_im') return (b.chamfer.instantmesh - b.chamfer.unpic) - (a.chamfer.instantmesh - a.chamfer.unpic);
-        if (sortMode === 'points_desc') return b.points - a.points;
         return a.id - b.id;
       });
     }
@@ -1657,20 +1603,19 @@
       const grid = document.getElementById('galleryGrid');
       const list = getFilteredSortedModels();
       document.getElementById('galleryCountLabel').textContent =
-        `(Showing ${list.length} of 40 objects • Click any object to inspect in 3D • ← / → arrow keys)`;
+        `Showing ${list.length} of 40 objects • Click any object to inspect in 3D`;
 
       grid.innerHTML = list.map(m => `
         <article class="gallery-card ${m.id === currentId ? 'selected' : ''}" data-id="${m.id}">
           <div class="gallery-thumb-wrap">
-            <span class="card-id-tag">#${m.id}</span>
-            <span class="dataset-pill ${m.dataset_short.toLowerCase()} card-ds-tag">${m.dataset_short}</span>
+            <span class="card-ds-badge">${m.dataset_short}</span>
             <img src="assets/input_white/${m.id}.png" loading="lazy" alt="${m.title}" />
           </div>
           <div class="gallery-card-body">
             <div class="gallery-card-title" title="${m.title}">${m.title}</div>
             <div class="gallery-card-sub">
-              <span>${(m.points / 1000).toFixed(0)}k pts</span>
-              <span style="color: var(--accent-teal); font-weight: 600;">CD ${m.chamfer.unpic.toFixed(2)}</span>
+              <span>#${m.id}</span>
+              <span>CD ${m.chamfer.unpic.toFixed(2)}</span>
             </div>
           </div>
         </article>
@@ -1679,7 +1624,7 @@
       grid.querySelectorAll('.gallery-card').forEach(card => {
         card.addEventListener('click', () => {
           selectModel(Number(card.dataset.id));
-          window.scrollTo({ top: 0, behavior: 'smooth' });
+          document.querySelector('.stage-card').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
         });
       });
     }
@@ -1688,7 +1633,7 @@
     MODELS.forEach(m => {
       const opt = document.createElement('option');
       opt.value = String(m.id);
-      opt.textContent = `#${m.id} [${m.dataset_short}] ${m.title}`;
+      opt.textContent = `#${m.id} — ${m.title}`;
       modelSelect.appendChild(opt);
     });
 
@@ -1716,10 +1661,19 @@
     });
 
     // =========================================================================
-    // 6. Toolbar & Viewport Controls
+    // Viewport Mode Segmented Pills & Controls
     // =========================================================================
-    panes.forEach(p => {
-      p.select.addEventListener('change', refreshAllPanes);
+    document.querySelectorAll('.hud-seg').forEach(seg => {
+      const paneId = seg.dataset.pane;
+      const paneObj = panes.find(p => p.id === paneId);
+      seg.querySelectorAll('.hud-seg-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          seg.querySelectorAll('.hud-seg-btn').forEach(b => b.classList.remove('active'));
+          btn.classList.add('active');
+          paneObj.mode = btn.dataset.mode;
+          refreshAllPanes();
+        });
+      });
     });
 
     document.getElementById('toggleInputBgBtn').addEventListener('click', () => {
@@ -1739,21 +1693,29 @@
       autoRotate = !autoRotate;
       panes[0].controls.autoRotate = autoRotate;
       panes[0].controls.autoRotateSpeed = 2.2;
-      toggleAutoRotateBtn.textContent = autoRotate ? '⟳ Auto-Rotate: On' : '⟳ Auto-Rotate: Off';
+      toggleAutoRotateBtn.textContent = autoRotate ? 'Auto-Rotate: On' : 'Auto-Rotate: Off';
     });
 
     const toggleNocsBoxBtn = document.getElementById('toggleNocsBoxBtn');
     toggleNocsBoxBtn.addEventListener('click', () => {
-      showNocsCube = !showNocsCube;
-      panes.forEach(p => { p.nocsCube.visible = showNocsCube; });
-      toggleNocsBoxBtn.textContent = showNocsCube ? '✓ [0, 1]³ NOCS Cube & Axes' : '☐ [0, 1]³ NOCS Cube & Axes';
+      if (cubeMode === 'nocs_only') {
+        cubeMode = 'all';
+        panes.forEach(p => { p.nocsCube.visible = true; });
+        toggleNocsBoxBtn.textContent = 'NOCS Cube: All';
+      } else if (cubeMode === 'all') {
+        cubeMode = 'off';
+        panes.forEach(p => { p.nocsCube.visible = false; });
+        toggleNocsBoxBtn.textContent = 'NOCS Cube: Off';
+      } else {
+        cubeMode = 'nocs_only';
+        panes.forEach(p => { p.nocsCube.visible = (p.id === 'nocs'); });
+        toggleNocsBoxBtn.textContent = 'NOCS Cube: On (Stage 1)';
+      }
     });
 
     const unprojectSlider = document.getElementById('unprojectSlider');
-    const unprojectVal = document.getElementById('unprojectVal');
     unprojectSlider.addEventListener('input', e => {
       unprojectionT = Number(e.target.value) / 100.0;
-      unprojectVal.textContent = `${e.target.value}%`;
       updateUnprojectionInPlace();
     });
 
@@ -1786,9 +1748,9 @@
       });
     });
 
-    document.querySelectorAll('#layoutSegmented .seg-btn').forEach(btn => {
+    document.querySelectorAll('#layoutSegmented .pill-btn').forEach(btn => {
       btn.addEventListener('click', () => {
-        document.querySelectorAll('#layoutSegmented .seg-btn').forEach(b => b.classList.remove('active'));
+        document.querySelectorAll('#layoutSegmented .pill-btn').forEach(b => b.classList.remove('active'));
         btn.classList.add('active');
         const grid = document.getElementById('pipeline3dGrid');
         grid.classList.toggle('layout-single', btn.dataset.layout === 'single');
@@ -1796,26 +1758,25 @@
       });
     });
 
-    document.querySelectorAll('#bgSegmented .seg-btn').forEach(btn => {
+    document.querySelectorAll('#bgSegmented .pill-btn').forEach(btn => {
       btn.addEventListener('click', () => {
-        document.querySelectorAll('#bgSegmented .seg-btn').forEach(b => b.classList.remove('active'));
+        document.querySelectorAll('#bgSegmented .pill-btn').forEach(b => b.classList.remove('active'));
         btn.classList.add('active');
         const col = new THREE.Color(btn.dataset.bg);
         panes.forEach(p => { p.scene.background = col.clone(); });
       });
     });
 
-    document.querySelectorAll('#datasetFilterPills .filter-pill').forEach(btn => {
+    document.querySelectorAll('#datasetFilterPills .pill-btn').forEach(btn => {
       btn.addEventListener('click', () => {
-        document.querySelectorAll('#datasetFilterPills .filter-pill').forEach(b => b.classList.remove('active'));
+        document.querySelectorAll('#datasetFilterPills .pill-btn').forEach(b => b.classList.remove('active'));
         btn.classList.add('active');
         datasetFilter = btn.dataset.filter;
-        // If current category has 0 items in this dataset, reset category to 'all'
         if (datasetFilter !== 'all' && categoryFilter !== 'all') {
           const hasMatch = MODELS.some(m => m.dataset_short === datasetFilter && m.category === categoryFilter);
           if (!hasMatch) {
             categoryFilter = 'all';
-            document.querySelectorAll('#categoryFilterPills .filter-pill').forEach(b => {
+            document.querySelectorAll('#categoryFilterPills .chip').forEach(b => {
               b.classList.toggle('active', b.dataset.cat === 'all');
             });
           }
@@ -1828,17 +1789,16 @@
       });
     });
 
-    document.querySelectorAll('#categoryFilterPills .filter-pill').forEach(btn => {
+    document.querySelectorAll('#categoryFilterPills .chip').forEach(btn => {
       btn.addEventListener('click', () => {
-        document.querySelectorAll('#categoryFilterPills .filter-pill').forEach(b => b.classList.remove('active'));
+        document.querySelectorAll('#categoryFilterPills .chip').forEach(b => b.classList.remove('active'));
         btn.classList.add('active');
         categoryFilter = btn.dataset.cat;
-        // If current dataset has 0 items in this category (e.g., GSO + Teapots & Ceramics), reset dataset to 'all'
         if (datasetFilter !== 'all' && categoryFilter !== 'all') {
           const hasMatch = MODELS.some(m => m.dataset_short === datasetFilter && m.category === categoryFilter);
           if (!hasMatch) {
             datasetFilter = 'all';
-            document.querySelectorAll('#datasetFilterPills .filter-pill').forEach(b => {
+            document.querySelectorAll('#datasetFilterPills .pill-btn').forEach(b => {
               b.classList.toggle('active', b.dataset.filter === 'all');
             });
           }
@@ -1945,14 +1905,14 @@
     });
 
     // =========================================================================
-    // 7. Resize & Render Loop
+    // Resize & Render Loop
     // =========================================================================
     function handleResize() {
       let aspectSet = false;
       panes.forEach(p => {
         if (p.wrap.offsetParent === null) return;
         const w = p.wrap.clientWidth || 450;
-        const h = p.wrap.clientHeight || 540;
+        const h = p.wrap.clientHeight || 520;
         if (!aspectSet) {
           sharedCamera.aspect = w / h;
           sharedCamera.updateProjectionMatrix();
